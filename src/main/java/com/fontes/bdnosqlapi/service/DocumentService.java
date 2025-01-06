@@ -9,12 +9,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class CollectionService {
+public class DocumentService {
 
     @Autowired
     private MongoTemplate mongoTemplate;
 
-    public Document saveObject(String collectionName, Document document) {
+    public Document saveDocument(String collectionName, Document document) {
         Document providedDocument = mongoTemplate.save(document, collectionName);
         String id = providedDocument.getObjectId("_id").toString();
         Document newDocument = new Document("_id", id);
@@ -23,7 +23,7 @@ public class CollectionService {
         return newDocument;
     }
 
-    public List<Document> getAllObjects(String collectionName) {
+    public List<Document> getAllDocuments(String collectionName) {
         return mongoTemplate.findAll(Document.class, collectionName).stream()
                 .map(document -> {
                     String id = document.getObjectId("_id").toString();
