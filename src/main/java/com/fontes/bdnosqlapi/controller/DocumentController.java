@@ -16,17 +16,21 @@ public class DocumentController {
     private DocumentService documentService;
 
     @PostMapping(value = "/{collectionName}")
-    public ResponseEntity<Document> addObject(@PathVariable String collectionName,
+    public ResponseEntity<Document> addDocument(@PathVariable String collectionName,
                                             @RequestBody Document json) {
         Document savedObject = documentService.saveDocument(collectionName, json);
         return ResponseEntity.ok(savedObject);
     }
 
     @GetMapping(value = "/{collectionName}")
-    public ResponseEntity<List<Document>> getAllObjects(@PathVariable String collectionName) {
+    public ResponseEntity<List<Document>> getAllDocuments(@PathVariable String collectionName) {
         List<Document> documents = documentService.getAllDocuments(collectionName);
         return ResponseEntity.ok(documents);
     }
 
-
+    @GetMapping(value = "/{collectionName}/{id}")
+    public ResponseEntity<Document> getDocument(@PathVariable String collectionName, @PathVariable String id) {
+        Document document = documentService.getDocument(collectionName, id);
+        return ResponseEntity.ok(document);
+    }
 }

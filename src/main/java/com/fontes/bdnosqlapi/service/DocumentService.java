@@ -34,4 +34,13 @@ public class DocumentService {
                 })
                 .collect(Collectors.toList());
     }
+
+    public Document getDocument(String collectionName, String id) {
+        Document document = mongoTemplate.findById(id, Document.class, collectionName);
+        Document newDocument = new Document("_id", id);
+        // doc pode ser nulo
+        document.remove("_id");
+        newDocument.putAll(document);
+        return newDocument;
+    }
 }
