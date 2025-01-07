@@ -3,6 +3,7 @@ package com.fontes.bdnosqlapi.service;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.BasicQuery;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,8 +24,13 @@ public class DocumentService {
         return newDocument;
     }
 
-    public List<Document> getAllDocuments(String collectionName) {
-        return mongoTemplate.findAll(Document.class, collectionName).stream()
+    //caso a query esteja vazia, irá retornar todos os documentos da coleção
+    public List<Document> getDocuments(String collectionName, String queryJson) {
+        Document query = (queryJson != null && !queryJson.isEmpty())
+                ? Document.parse(queryJson)
+                : new Document();
+
+        return mongoTemplate.find(new BasicQuery(query), Document.class, collectionName).stream()
                 .map(document -> {
                     String id = document.getObjectId("_id").toString();
                     document.remove("_id");

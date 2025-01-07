@@ -22,9 +22,11 @@ public class DocumentController {
         return ResponseEntity.ok(savedObject);
     }
 
+    // não aecita query json (encoded)
     @GetMapping(value = "/{collectionName}")
-    public ResponseEntity<List<Document>> getAllDocuments(@PathVariable String collectionName) {
-        List<Document> documents = documentService.getAllDocuments(collectionName);
+    public ResponseEntity<List<Document>> getDocuments(@PathVariable String collectionName,
+                                                       @RequestParam(value = "query", required = false) String query) {
+        List<Document> documents = documentService.getDocuments(collectionName, query);
         return ResponseEntity.ok(documents);
     }
 
