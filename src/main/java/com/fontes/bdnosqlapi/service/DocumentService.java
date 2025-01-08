@@ -1,6 +1,7 @@
 package com.fontes.bdnosqlapi.service;
 
 import org.bson.Document;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.BasicQuery;
@@ -48,5 +49,15 @@ public class DocumentService {
         document.remove("_id");
         newDocument.putAll(document);
         return newDocument;
+    }
+
+    public Document updateDocument(String collectionName, String id, Document newDocument) {
+        ObjectId objectId = new ObjectId(id);
+        newDocument.put("_id", objectId);
+        mongoTemplate.save(newDocument, collectionName);
+        newDocument.remove("_id");
+        Document returnedDocument = new Document("_id", id);
+        returnedDocument.putAll(newDocument);
+        return returnedDocument;
     }
 }

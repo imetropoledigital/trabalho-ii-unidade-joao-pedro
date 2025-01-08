@@ -22,7 +22,7 @@ public class DocumentController {
         return ResponseEntity.ok(savedObject);
     }
 
-    // não aecita query json (encoded)
+    // a query tem que ser feita url-encoded
     @GetMapping(value = "/{collectionName}")
     public ResponseEntity<List<Document>> getDocuments(@PathVariable String collectionName,
                                                        @RequestParam(value = "query", required = false) String query) {
@@ -34,5 +34,13 @@ public class DocumentController {
     public ResponseEntity<Document> getDocument(@PathVariable String collectionName, @PathVariable String id) {
         Document document = documentService.getDocument(collectionName, id);
         return ResponseEntity.ok(document);
+    }
+
+    @PutMapping(value = "/{collectionName}/{id}")
+    public ResponseEntity<Document> updateDocument(@PathVariable String collectionName, @PathVariable String id,
+                                                   @RequestBody Document json) {
+        Document updatedDocument = documentService.updateDocument(collectionName, id, json);
+
+        return ResponseEntity.ok(updatedDocument);
     }
 }
