@@ -23,8 +23,9 @@ public class DocumentController {
 
     @GetMapping(value = "/{collectionName}")
     public ResponseEntity<List<Document>> getDocuments(@PathVariable String collectionName,
-                                                       @RequestParam(value = "query", required = false) String query) {
-        List<Document> documents = documentService.getDocuments(collectionName, query);
+                                                       @RequestParam(value = "query", required = false) String query,
+                                                       @RequestParam(value = "fields", required = false) String fields) {
+        List<Document> documents = documentService.getDocuments(collectionName, query, fields);
         return ResponseEntity.ok(documents);
     }
 

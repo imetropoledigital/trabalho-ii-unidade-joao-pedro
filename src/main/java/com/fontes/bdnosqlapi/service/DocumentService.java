@@ -26,12 +26,24 @@ public class DocumentService {
     }
 
     //caso a query esteja vazia, irá retornar todos os documentos da coleção
-    public List<Document> getDocuments(String collectionName, String queryJson) {
+    public List<Document> getDocuments(String collectionName, String queryJson, String fields) {
         Document query = (queryJson != null && !queryJson.isEmpty())
                 ? Document.parse(queryJson)
                 : new Document();
 
-        return mongoTemplate.find(new BasicQuery(query), Document.class, collectionName).stream()
+        Document projection = new Document();
+        if(fields != null && !fields.isEmpty()) {
+            String[] fieldArray = fields.split(",");
+            for(String field : fieldArray) {
+                if(field.startsWith("-")) {
+                    projection.put(field.substring(1), 0);
+                }
+                else {
+                    projection.put(field, 1);
+                }
+            }
+        }
+        return mongoTemplate.find(new BasicQuery(query, projection), Document.class, collectionName).stream()
                 .map(document -> {
                     String id = document.getObjectId("_id").toString();
                     document.remove("_id");
