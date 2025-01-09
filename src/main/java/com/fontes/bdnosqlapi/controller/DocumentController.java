@@ -42,4 +42,10 @@ public class DocumentController {
 
         return ResponseEntity.ok(updatedDocument);
     }
+
+    @DeleteMapping(value = "/{collectionName}/{id}")
+    public ResponseEntity<Document> deleteDocument(@PathVariable String collectionName, @PathVariable String id) {
+        documentService.deleteDocument(collectionName, id);
+        return ResponseEntity.noContent().build();
+    }
 }

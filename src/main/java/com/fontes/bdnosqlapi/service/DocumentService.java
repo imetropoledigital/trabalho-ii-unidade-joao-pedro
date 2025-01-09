@@ -35,7 +35,10 @@ public class DocumentService {
         if(fields != null && !fields.isEmpty()) {
             String[] fieldArray = fields.split(",");
             for(String field : fieldArray) {
-                if(field.startsWith("-")) {
+                if(field.equals("-_id")) {
+                    projection.put("_id", 0);
+                }
+                else if(field.startsWith("-")) {
                     projection.put(field.substring(1), 0);
                 }
                 else {
@@ -45,19 +48,22 @@ public class DocumentService {
         }
         return mongoTemplate.find(new BasicQuery(query, projection), Document.class, collectionName).stream()
                 .map(document -> {
-                    String id = document.getObjectId("_id").toString();
-                    document.remove("_id");
-                    Document newDocument = new Document("_id", id);
-                    newDocument.putAll(document);
-                    return newDocument;
+                   Document newDocument = new Document();
+                   if(document.containsKey("_id") && document.getObjectId("_id") != null) {
+                       String id = document.getObjectId("_id").toString();
+                       newDocument.put("_id", id);
+                   }
+                   document.remove("_id");
+                   newDocument.putAll(document);
+                   return newDocument;
                 })
+                .filter(newDocument -> !newDocument.isEmpty())
                 .collect(Collectors.toList());
     }
 
     public Document getDocument(String collectionName, String id) {
         Document document = mongoTemplate.findById(id, Document.class, collectionName);
         Document newDocument = new Document("_id", id);
-        // doc pode ser nulo
         document.remove("_id");
         newDocument.putAll(document);
         return newDocument;
@@ -71,5 +77,10 @@ public class DocumentService {
         Document returnedDocument = new Document("_id", id);
         returnedDocument.putAll(newDocument);
         return returnedDocument;
+    }
+
+    public void deleteDocument(String collectionName, String id) {
+        Document query = new Document("_id", new ObjectId(id));
+        mongoTemplate.remove(query, collectionName);
     }
 }
