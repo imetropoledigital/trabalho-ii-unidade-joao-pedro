@@ -11,7 +11,6 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/collections")
 public class DocumentController {
-
     @Autowired
     private DocumentService documentService;
 
@@ -22,7 +21,6 @@ public class DocumentController {
         return ResponseEntity.ok(savedObject);
     }
 
-    // a query tem que ser feita url-encoded
     @GetMapping(value = "/{collectionName}")
     public ResponseEntity<List<Document>> getDocuments(@PathVariable String collectionName,
                                                        @RequestParam(value = "query", required = false) String query) {
